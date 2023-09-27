@@ -1,0 +1,16 @@
+{
+  "namespace": "app.nourtabib.financialdatastreamingapp.avros",
+  "type": "record",
+  "name": "AccountActivityAggregation",
+  "fields": [
+    {"name": "total","type": "double"},
+    {"name": "count","type": "int"},
+    {
+      "name": "timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    }
+  ]
+}
