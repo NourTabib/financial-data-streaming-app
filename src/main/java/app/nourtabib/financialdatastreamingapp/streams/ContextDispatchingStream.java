@@ -11,20 +11,15 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
-import java.util.Collections;
 import java.util.Map;
-import java.util.UUID;
 
 @Component
-public class ContextDispatchinStream {
+public class ContextDispatchingStream {
 
 
     @Value("${spring.kafka.topic.raw-transactions-events}")
@@ -39,7 +34,7 @@ public class ContextDispatchinStream {
 
     KafkaTemplate<String, RawTransactionAvro> kafkaTemplate;
     @Autowired
-    public ContextDispatchinStream(KafkaTemplate<String, RawTransactionAvro> kafkaTemplate){
+    public ContextDispatchingStream(KafkaTemplate<String, RawTransactionAvro> kafkaTemplate){
         this.kafkaTemplate = kafkaTemplate;
     }
     @Autowired
