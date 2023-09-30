@@ -1,7 +1,7 @@
 package app.nourtabib.financialdatastreamingapp.streams;
 
 
-import app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation;
+import app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate;
 import app.nourtabib.financialdatastreamingapp.avros.AccountIncomeContext;
 import app.nourtabib.financialdatastreamingapp.avros.AccountOutcomeContext;
 import app.nourtabib.financialdatastreamingapp.streams.utils.TimeStampExtractors;
@@ -9,32 +9,28 @@ import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
-import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.state.WindowStore;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 @Component
-public class FirstStagePreprocessing {
+public class AccountActivityAggregationStageStream {
 
 
 
     // AGGREGATION STAGES :
     // (RAW_TRANSACTIONS) -> WINDOWING BY 10SECS (COUNT,TOTAL) -> WINDOWING BY 1HOURS  -> (COUNT,TOTAL,1MIN_WINDOW) -> WINDOWING BY 1DAY-> (COUNT,TOTAL,1DAY_WINDOW)
-    // THIS APPROACH INTRODUCES A 1MIN LATENCY EACH HOUR SINCE IT'S EMIT THE WINDOW FINAL RESULT AFTER 1 MIN
+    // THIS APPROACH INTRODUCES A SOME LATENCY IN EACH STAGE
+    // BECAUSE UPSTREAM EMIT THE WINDOW'S AGGREGATIONS RESULTS AFTER THE (5SEC and 1MIN) GRACE PERIODS
+    // BUT IT GUARANTEES ORDER IN THE DOWNSTREAM
     @Autowired
     public void buildTopologyFirstApproach(StreamsBuilder streamsBuilder){
 
@@ -42,8 +38,8 @@ public class FirstStagePreprocessing {
 
         Serde<AccountIncomeContext> accountIncomeContextSerde =  new SpecificAvroSerde<>();
         Serde<AccountOutcomeContext> accountOutcomeContextSerde=  new SpecificAvroSerde<>();
-        Serde<AccountActivityAggregation> accountActivityAggregationSerde=  new SpecificAvroSerde<>();
-        Serde<List<AccountActivityAggregation>> accountActivityAggregationListSerde = new Serdes.ListSerde(ArrayList.class,accountActivityAggregationSerde);
+        Serde<AccountActivityAggregate> accountActivityAggregationSerde=  new SpecificAvroSerde<>();
+        Serde<List<AccountActivityAggregate>> accountActivityAggregationListSerde = new Serdes.ListSerde(ArrayList.class,accountActivityAggregationSerde);
         Serde<List<AccountIncomeContext>> accountIncomeAggregationListSerde = new Serdes.ListSerde(ArrayList.class,accountIncomeContextSerde);
         Serde<List<Double>> longListSerde = new Serdes.ListSerde(ArrayList.class,Serdes.Double());
 
@@ -87,13 +83,11 @@ public class FirstStagePreprocessing {
         Consumed<String,AccountOutcomeContext> accountOutContextConsumedWith = Consumed
                 .with(Serdes.String(),accountOutcomeContextSerde)
                 .withTimestampExtractor(new TimeStampExtractors.AccountOutcomeContextTimeStampExtractor());
-
+        Produced<?,?> accountActivityDailyAggregateProducedWith = Produced
+                .with(Serdes.String(),accountIncomeAggregationListSerde);
 
         KStream<String, AccountIncomeContext> accountIncomeContextKStream = streamsBuilder.stream("account-income-context",accountIncContextConsumedWith);
         KStream<String, AccountOutcomeContext> accountOutcomeContextKStream = streamsBuilder.stream("account-outcome-context",accountOutContextConsumedWith);
-
-
-
 
 
        // KTable<Windowed<String>,AccountActivityAggregation> tenSecondIncomeActivityAggregation =
@@ -101,7 +95,7 @@ public class FirstStagePreprocessing {
                 .groupByKey()
                 .windowedBy(tenSecondsWindow.advanceBy(tenSeconds))
                 .aggregate(
-                        ()-> new AccountActivityAggregation(0.0,0, Instant.ofEpochMilli(0L)),
+                        ()-> new AccountActivityAggregate(0.0,0, Instant.ofEpochMilli(0L)),
                         (key,newRecord,aggValue)-> {
                             aggValue.setTotal(aggValue.getTotal() + newRecord.getAmount());
                             aggValue.setCount(aggValue.getCount() + 1);
@@ -110,7 +104,8 @@ public class FirstStagePreprocessing {
                             }
                             return aggValue;
                         },
-                        Materialized.<String,AccountActivityAggregation, WindowStore<Bytes,byte[]>>as("ACCOUNT-ICOME-ACTIVITY-10-SECS-AGGREGATION")
+                        Materialized.<String, AccountActivityAggregate, WindowStore<Bytes,byte[]>>
+                                        as("INCOME-ACTIVITY-1DAY-AGGREGATES-VALUES")
                                 .withKeySerde(Serdes.String())
                                 .withValueSerde(accountActivityAggregationSerde)
                 )
@@ -119,7 +114,7 @@ public class FirstStagePreprocessing {
                 .groupBy((key,value) -> key.key())
                 .windowedBy(oneHourWindow.advanceBy(oneHours))
                 .aggregate(
-                        ()-> new AccountActivityAggregation(0.0,0,Instant.ofEpochMilli(0L)),
+                        ()-> new AccountActivityAggregate(0.0,0,Instant.ofEpochMilli(0L)),
                         (key,newResult,aggValue)->{
                             aggValue.setTotal(aggValue.getTotal() + newResult.getTotal());
                             aggValue.setCount(aggValue.getCount() + newResult.getCount());
@@ -128,7 +123,8 @@ public class FirstStagePreprocessing {
                             }
                             return aggValue;
                         },
-                        Materialized.<String,AccountActivityAggregation,WindowStore<Bytes,byte[]>>as("ACCOUNT-ICOME-ACTIVITY-1-HOUR-AGGREGATION")
+                        Materialized.<String, AccountActivityAggregate,WindowStore<Bytes,byte[]>>
+                                        as("INCOME-ACTIVITY-1HOUR-AGGREGATES-VALUES")
                                 .withKeySerde(Serdes.String())
                                 .withValueSerde(accountActivityAggregationSerde)
                 )
@@ -136,7 +132,7 @@ public class FirstStagePreprocessing {
                 .groupBy((key,value)-> key.key())
                 .windowedBy(oneDayWindow.advanceBy(oneDay))
                 .aggregate(
-                        ()-> new AccountActivityAggregation(0.0,0,Instant.ofEpochMilli(0L)),
+                        ()-> new AccountActivityAggregate(0.0,0,Instant.ofEpochMilli(0L)),
                         (key,newResult,aggValue)->{
                             aggValue.setTotal(aggValue.getTotal() + newResult.getTotal());
                             aggValue.setCount(aggValue.getCount() + newResult.getCount());
@@ -145,7 +141,7 @@ public class FirstStagePreprocessing {
                             }
                             return aggValue;
                         },
-                        Materialized.<String,AccountActivityAggregation,WindowStore<Bytes,byte[]>>as("ACCOUNT-ICOME-ACTIVITY-1-DAY-AGGREGATION")
+                        Materialized.<String, AccountActivityAggregate,WindowStore<Bytes,byte[]>>as("INCOME-ACTIVITY-1DAY-AGGREGATES-VALUES")
                                 .withKeySerde(Serdes.String())
                                 .withValueSerde(accountActivityAggregationSerde)
                 )
@@ -155,19 +151,17 @@ public class FirstStagePreprocessing {
                 .groupByKey()
                 .windowedBy(oneMonthsWindow.advanceBy(oneMonth))
                 .aggregate(
-                        ArrayList<AccountActivityAggregation>::new,
+                        ArrayList<AccountActivityAggregate>::new,
                         (key,newResult,aggList) -> {
                             aggList.add(newResult);
                             return aggList;
                         },
-                        Materialized.<String,List<AccountActivityAggregation>,WindowStore<Bytes,byte[]>>as("ACCOUNT-INCOME-ACTIVITY-1-MONTH-DAILY-AGGREGATION-LIST")
+                        Materialized.<String,List<AccountActivityAggregate>,WindowStore<Bytes,byte[]>>as("INCOME-ACTIVITY-1MONTH-AGGREGATES-HISTORY-DAILY-VALUES")
                                 .withKeySerde(Serdes.String())
                                 .withValueSerde(accountActivityAggregationListSerde)
                 )
                 .toStream()
-                .peek((key,value) -> {
-                    System.out.println("aaaa["+key.window()+"]"+" : "+value.toString());
-                });
+                .to("account-income-activity-month-daily-aggregates");
     }
     public void testCase(StreamsBuilder streamsBuilder){
         // WORKING TEST CASE

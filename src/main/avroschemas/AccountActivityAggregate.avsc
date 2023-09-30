@@ -1,7 +1,7 @@
 {
   "namespace": "app.nourtabib.financialdatastreamingapp.avros",
   "type": "record",
-  "name": "AccountActivityAggregation",
+  "name": "AccountActivityAggregate",
   "fields": [
     {"name": "total","type": "double"},
     {"name": "count","type": "int"},

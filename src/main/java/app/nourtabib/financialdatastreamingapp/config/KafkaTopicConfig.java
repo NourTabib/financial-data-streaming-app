@@ -57,11 +57,36 @@ public class KafkaTopicConfig {
 
     @Bean
     public NewTopic accountIncomeContextTopic() {
-        return new NewTopic("account-income-context", 1, (short) 1);
+        return new NewTopic("account-income-activity", 1, (short) 1);
     }
 
     @Bean
     public NewTopic accountOutcomeContextTopic() {
-        return new NewTopic("account-outcome-context", 1, (short) 1);
+        return new NewTopic("account-outcome-activity", 1, (short) 1);
     }
+    @Bean
+    public NewTopic accountIncomeActivityMonthDailyAggregates() {
+        return new NewTopic("account-income-activity-daily-aggregates", 1, (short) 1);
+    }
+    @Bean
+    public NewTopic accountOutcomeActivityMonthDailyAggregates() {
+        return new NewTopic("account-outcome-activity-daily-aggregates", 1, (short) 1);
+    }
+    @Bean
+    public NewTopic accountIncomeActivityDailyAggregatesHistory() {
+        return new NewTopic("account-income-activity-daily-aggregates-history", 1, (short) 1);
+    }
+    @Bean
+    public NewTopic accountOutcomeActivityMonthDailyAggregatesHistory() {
+        return new NewTopic("account-outcome-activity-daily-aggregates-history", 1, (short) 1);
+    }
+    @Bean
+    public NewTopic accountIncomeActivityDailyAggregatesHistoryStft() {
+        return new NewTopic("account-income-activity-daily-aggregates-history-stft", 1, (short) 1);
+    }
+    @Bean
+    public NewTopic accountOutcomeActivityMonthDailyAggregatesHistoryStft() {
+        return new NewTopic("account-outcome-activity-daily-aggregates-history-stft", 1, (short) 1);
+    }
+
 }

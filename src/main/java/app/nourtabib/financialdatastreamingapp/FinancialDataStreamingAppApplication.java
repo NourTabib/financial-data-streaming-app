@@ -1,24 +1,15 @@
 package app.nourtabib.financialdatastreamingapp;
 
-import app.nourtabib.financialdatastreamingapp.avros.RawTransactionAvro;
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
+import app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate;
+import app.nourtabib.financialdatastreamingapp.streams.utils.Transformers;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
-import org.springframework.stereotype.Component;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.Instant;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.time.ZoneId;
+import java.util.*;
 
 @SpringBootApplication
 public class FinancialDataStreamingAppApplication {
-
 //	@Component
 //	public class Container {
 //		@Autowired
@@ -57,7 +48,41 @@ public class FinancialDataStreamingAppApplication {
 //		}
 //	}
 		public static void main(String[] args) {
-			SpringApplication.run(FinancialDataStreamingAppApplication.class, args);
+			Transformers transformers = new Transformers();
+			Instant now = Instant.ofEpochSecond(0);
+			System.out.println(now.atZone(ZoneId.of("UTC")).getDayOfMonth());
+			List<AccountActivityAggregate> initialList = new ArrayList<>(5);
+			List<Integer> sortedList = new ArrayList<>(24);
+			for (int i = 0; i < 30; i++) {
+				sortedList.add(0);
+			}
+			initialList.add(AccountActivityAggregate.newBuilder().setTimestamp(now).setCount(1).setTotal(10).build());
+			initialList.add(AccountActivityAggregate.newBuilder().setTimestamp(now.plusSeconds(60L*60L*5L)).setCount(2).setTotal(20).build());
+			initialList.add(AccountActivityAggregate.newBuilder().setTimestamp(now.plusSeconds(60L*60L*9L)).setCount(3).setTotal(30).build());
+			initialList.add(AccountActivityAggregate.newBuilder().setTimestamp(now.plusSeconds(60L*60L*15L)).setCount(4).setTotal(40).build());
+			initialList.add(AccountActivityAggregate.newBuilder().setTimestamp(now.plusSeconds(28L*60L*60L*24L)).setCount(5).setTotal(50).build());
+
+
+			initialList=initialList.stream().sorted((x,y)-> Integer.compare(x.getTimestamp().atZone(ZoneId.of("UTC")).getDayOfMonth(),y.getTimestamp().atZone(ZoneId.of("UTC")).getDayOfMonth())).toList();
+			for(AccountActivityAggregate c : initialList){
+				int hour = c.getTimestamp().atZone(ZoneId.of("UTC")).getDayOfMonth();
+				System.out.println(hour);
+				if (hour >= 0 && hour < 30) {
+					sortedList.set(hour, c.getCount());
+				}
+			}
+//			for(int c : sortedList){
+//				System.out.println(c);
+//			}
+			double[] a = transformers.extractTotalsFromWindowActivity.apply(initialList,30,"daily");
+			System.out.println(Arrays.toString(a));
+			System.out.println(a.length);
+
+			double [] res =  Transformers.stfTransform.apply(a,30,1);
+			double [] res1 =  Transformers.stfTransform.apply(a,15,1);
+			System.out.println(Arrays.toString(res));
+			System.out.println(res.length);
+//			SpringApplication.run(FinancialDataStreamingAppApplication.class, args);
 
 		}
 

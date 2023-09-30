@@ -13,9 +13,9 @@ import org.apache.avro.message.BinaryMessageDecoder;
 import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
-public class AccountActivityAggregation extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -2135050769894531628L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AccountActivityAggregation\",\"namespace\":\"app.nourtabib.financialdatastreamingapp.avros\",\"fields\":[{\"name\":\"total\",\"type\":\"double\"},{\"name\":\"count\",\"type\":\"int\"},{\"name\":\"timestamp\",\"type\":{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}}]}");
+public class AccountActivityAggregate extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
+  private static final long serialVersionUID = -8459583924254363369L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"AccountActivityAggregate\",\"namespace\":\"app.nourtabib.financialdatastreamingapp.avros\",\"fields\":[{\"name\":\"total\",\"type\":\"double\"},{\"name\":\"count\",\"type\":\"int\"},{\"name\":\"timestamp\",\"type\":{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -23,17 +23,17 @@ static {
     MODEL$.addLogicalTypeConversion(new org.apache.avro.data.TimeConversions.TimestampMillisConversion());
   }
 
-  private static final BinaryMessageEncoder<AccountActivityAggregation> ENCODER =
-      new BinaryMessageEncoder<AccountActivityAggregation>(MODEL$, SCHEMA$);
+  private static final BinaryMessageEncoder<AccountActivityAggregate> ENCODER =
+      new BinaryMessageEncoder<AccountActivityAggregate>(MODEL$, SCHEMA$);
 
-  private static final BinaryMessageDecoder<AccountActivityAggregation> DECODER =
-      new BinaryMessageDecoder<AccountActivityAggregation>(MODEL$, SCHEMA$);
+  private static final BinaryMessageDecoder<AccountActivityAggregate> DECODER =
+      new BinaryMessageDecoder<AccountActivityAggregate>(MODEL$, SCHEMA$);
 
   /**
    * Return the BinaryMessageEncoder instance used by this class.
    * @return the message encoder used by this class
    */
-  public static BinaryMessageEncoder<AccountActivityAggregation> getEncoder() {
+  public static BinaryMessageEncoder<AccountActivityAggregate> getEncoder() {
     return ENCODER;
   }
 
@@ -41,7 +41,7 @@ static {
    * Return the BinaryMessageDecoder instance used by this class.
    * @return the message decoder used by this class
    */
-  public static BinaryMessageDecoder<AccountActivityAggregation> getDecoder() {
+  public static BinaryMessageDecoder<AccountActivityAggregate> getDecoder() {
     return DECODER;
   }
 
@@ -50,12 +50,12 @@ static {
    * @param resolver a {@link SchemaStore} used to find schemas by fingerprint
    * @return a BinaryMessageDecoder instance for this class backed by the given SchemaStore
    */
-  public static BinaryMessageDecoder<AccountActivityAggregation> createDecoder(SchemaStore resolver) {
-    return new BinaryMessageDecoder<AccountActivityAggregation>(MODEL$, SCHEMA$, resolver);
+  public static BinaryMessageDecoder<AccountActivityAggregate> createDecoder(SchemaStore resolver) {
+    return new BinaryMessageDecoder<AccountActivityAggregate>(MODEL$, SCHEMA$, resolver);
   }
 
   /**
-   * Serializes this AccountActivityAggregation to a ByteBuffer.
+   * Serializes this AccountActivityAggregate to a ByteBuffer.
    * @return a buffer holding the serialized data for this instance
    * @throws java.io.IOException if this instance could not be serialized
    */
@@ -64,12 +64,12 @@ static {
   }
 
   /**
-   * Deserializes a AccountActivityAggregation from a ByteBuffer.
+   * Deserializes a AccountActivityAggregate from a ByteBuffer.
    * @param b a byte buffer holding serialized data for an instance of this class
-   * @return a AccountActivityAggregation instance decoded from the given buffer
+   * @return a AccountActivityAggregate instance decoded from the given buffer
    * @throws java.io.IOException if the given bytes could not be deserialized into an instance of this class
    */
-  public static AccountActivityAggregation fromByteBuffer(
+  public static AccountActivityAggregate fromByteBuffer(
       java.nio.ByteBuffer b) throws java.io.IOException {
     return DECODER.decode(b);
   }
@@ -83,7 +83,7 @@ static {
    * to their default values from the schema.  If that is desired then
    * one should use <code>newBuilder()</code>.
    */
-  public AccountActivityAggregation() {}
+  public AccountActivityAggregate() {}
 
   /**
    * All-args constructor.
@@ -91,7 +91,7 @@ static {
    * @param count The new value for count
    * @param timestamp The new value for timestamp
    */
-  public AccountActivityAggregation(java.lang.Double total, java.lang.Integer count, java.time.Instant timestamp) {
+  public AccountActivityAggregate(java.lang.Double total, java.lang.Integer count, java.time.Instant timestamp) {
     this.total = total;
     this.count = count;
     this.timestamp = timestamp.truncatedTo(java.time.temporal.ChronoUnit.MILLIS);
@@ -185,45 +185,45 @@ static {
   }
 
   /**
-   * Creates a new AccountActivityAggregation RecordBuilder.
-   * @return A new AccountActivityAggregation RecordBuilder
+   * Creates a new AccountActivityAggregate RecordBuilder.
+   * @return A new AccountActivityAggregate RecordBuilder
    */
-  public static app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation.Builder newBuilder() {
-    return new app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation.Builder();
+  public static app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate.Builder newBuilder() {
+    return new app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate.Builder();
   }
 
   /**
-   * Creates a new AccountActivityAggregation RecordBuilder by copying an existing Builder.
+   * Creates a new AccountActivityAggregate RecordBuilder by copying an existing Builder.
    * @param other The existing builder to copy.
-   * @return A new AccountActivityAggregation RecordBuilder
+   * @return A new AccountActivityAggregate RecordBuilder
    */
-  public static app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation.Builder newBuilder(app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation.Builder other) {
+  public static app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate.Builder newBuilder(app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate.Builder other) {
     if (other == null) {
-      return new app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation.Builder();
+      return new app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate.Builder();
     } else {
-      return new app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation.Builder(other);
+      return new app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate.Builder(other);
     }
   }
 
   /**
-   * Creates a new AccountActivityAggregation RecordBuilder by copying an existing AccountActivityAggregation instance.
+   * Creates a new AccountActivityAggregate RecordBuilder by copying an existing AccountActivityAggregate instance.
    * @param other The existing instance to copy.
-   * @return A new AccountActivityAggregation RecordBuilder
+   * @return A new AccountActivityAggregate RecordBuilder
    */
-  public static app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation.Builder newBuilder(app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation other) {
+  public static app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate.Builder newBuilder(app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate other) {
     if (other == null) {
-      return new app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation.Builder();
+      return new app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate.Builder();
     } else {
-      return new app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation.Builder(other);
+      return new app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate.Builder(other);
     }
   }
 
   /**
-   * RecordBuilder for AccountActivityAggregation instances.
+   * RecordBuilder for AccountActivityAggregate instances.
    */
   @org.apache.avro.specific.AvroGenerated
-  public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<AccountActivityAggregation>
-    implements org.apache.avro.data.RecordBuilder<AccountActivityAggregation> {
+  public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<AccountActivityAggregate>
+    implements org.apache.avro.data.RecordBuilder<AccountActivityAggregate> {
 
     private double total;
     private int count;
@@ -238,7 +238,7 @@ static {
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation.Builder other) {
+    private Builder(app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.total)) {
         this.total = data().deepCopy(fields()[0].schema(), other.total);
@@ -255,10 +255,10 @@ static {
     }
 
     /**
-     * Creates a Builder by copying an existing AccountActivityAggregation instance
+     * Creates a Builder by copying an existing AccountActivityAggregate instance
      * @param other The existing instance to copy.
      */
-    private Builder(app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation other) {
+    private Builder(app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate other) {
       super(SCHEMA$);
       if (isValidValue(fields()[0], other.total)) {
         this.total = data().deepCopy(fields()[0].schema(), other.total);
@@ -288,7 +288,7 @@ static {
       * @param value The value of 'total'.
       * @return This builder.
       */
-    public app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation.Builder setTotal(double value) {
+    public app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate.Builder setTotal(double value) {
       validate(fields()[0], value);
       this.total = value;
       fieldSetFlags()[0] = true;
@@ -308,7 +308,7 @@ static {
       * Clears the value of the 'total' field.
       * @return This builder.
       */
-    public app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation.Builder clearTotal() {
+    public app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate.Builder clearTotal() {
       fieldSetFlags()[0] = false;
       return this;
     }
@@ -327,7 +327,7 @@ static {
       * @param value The value of 'count'.
       * @return This builder.
       */
-    public app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation.Builder setCount(int value) {
+    public app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate.Builder setCount(int value) {
       validate(fields()[1], value);
       this.count = value;
       fieldSetFlags()[1] = true;
@@ -347,7 +347,7 @@ static {
       * Clears the value of the 'count' field.
       * @return This builder.
       */
-    public app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation.Builder clearCount() {
+    public app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate.Builder clearCount() {
       fieldSetFlags()[1] = false;
       return this;
     }
@@ -366,7 +366,7 @@ static {
       * @param value The value of 'timestamp'.
       * @return This builder.
       */
-    public app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation.Builder setTimestamp(java.time.Instant value) {
+    public app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate.Builder setTimestamp(java.time.Instant value) {
       validate(fields()[2], value);
       this.timestamp = value.truncatedTo(java.time.temporal.ChronoUnit.MILLIS);
       fieldSetFlags()[2] = true;
@@ -386,16 +386,16 @@ static {
       * Clears the value of the 'timestamp' field.
       * @return This builder.
       */
-    public app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregation.Builder clearTimestamp() {
+    public app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate.Builder clearTimestamp() {
       fieldSetFlags()[2] = false;
       return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public AccountActivityAggregation build() {
+    public AccountActivityAggregate build() {
       try {
-        AccountActivityAggregation record = new AccountActivityAggregation();
+        AccountActivityAggregate record = new AccountActivityAggregate();
         record.total = fieldSetFlags()[0] ? this.total : (java.lang.Double) defaultValue(fields()[0]);
         record.count = fieldSetFlags()[1] ? this.count : (java.lang.Integer) defaultValue(fields()[1]);
         record.timestamp = fieldSetFlags()[2] ? this.timestamp : (java.time.Instant) defaultValue(fields()[2]);
@@ -409,8 +409,8 @@ static {
   }
 
   @SuppressWarnings("unchecked")
-  private static final org.apache.avro.io.DatumWriter<AccountActivityAggregation>
-    WRITER$ = (org.apache.avro.io.DatumWriter<AccountActivityAggregation>)MODEL$.createDatumWriter(SCHEMA$);
+  private static final org.apache.avro.io.DatumWriter<AccountActivityAggregate>
+    WRITER$ = (org.apache.avro.io.DatumWriter<AccountActivityAggregate>)MODEL$.createDatumWriter(SCHEMA$);
 
   @Override public void writeExternal(java.io.ObjectOutput out)
     throws java.io.IOException {
@@ -418,8 +418,8 @@ static {
   }
 
   @SuppressWarnings("unchecked")
-  private static final org.apache.avro.io.DatumReader<AccountActivityAggregation>
-    READER$ = (org.apache.avro.io.DatumReader<AccountActivityAggregation>)MODEL$.createDatumReader(SCHEMA$);
+  private static final org.apache.avro.io.DatumReader<AccountActivityAggregate>
+    READER$ = (org.apache.avro.io.DatumReader<AccountActivityAggregate>)MODEL$.createDatumReader(SCHEMA$);
 
   @Override public void readExternal(java.io.ObjectInput in)
     throws java.io.IOException {
