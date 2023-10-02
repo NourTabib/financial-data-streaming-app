@@ -2,9 +2,11 @@ package app.nourtabib.financialdatastreamingapp.streams.utils;
 
 import app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate;
 import com.github.psambit9791.jdsp.transform.ShortTimeFourier;
+import com.github.psambit9791.jdsp.transform._Fourier;
 
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Transformers {
@@ -42,6 +44,16 @@ public class Transformers {
     public static final StfTransformer stfTransform = (signals,windowSize,overlap) -> {
         ShortTimeFourier transformer = new ShortTimeFourier(signals,windowSize,overlap);
         transformer.transform();
+        transformer.getTimeAxis();
+        _Fourier[] dfts = transformer.getOutput();
+        System.out.println(Arrays.toString(transformer.getTimeAxis()));
+        Arrays.stream(dfts).forEach((value)-> {
+            System.out.println("****START****");
+            System.out.println(Arrays.toString(value.getMagnitude(false)));
+            System.out.println(Arrays.toString(value.getFFTFreq(31,false)));
+            System.out.println(Arrays.toString(value.getMagnitude(false)));
+            System.out.println("****END****");
+        });
         return transformer.getFrequencyAxis(false);
     };
 }
