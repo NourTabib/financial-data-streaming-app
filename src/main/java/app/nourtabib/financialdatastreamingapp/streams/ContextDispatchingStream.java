@@ -79,7 +79,7 @@ public class ContextDispatchingStream {
                     return new KeyValue<String, AccountIncomeContext>(rawTransaction.getNameDest().toString(), accountIncomeContext);
                 });
 
-        incomeContextKStream.to("account-income-activity",accountIncomeContextProduced);
+            incomeContextKStream.to("account-income-activity",accountIncomeContextProduced);
 
         KStream<String, AccountOutcomeContext> outcomeContextKStream = rawTransactionAvroKStream
                 .map((transactionId, rawTransaction) -> {

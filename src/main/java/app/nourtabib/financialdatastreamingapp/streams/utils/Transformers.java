@@ -47,11 +47,19 @@ public class Transformers {
         transformer.getTimeAxis();
         _Fourier[] dfts = transformer.getOutput();
         System.out.println(Arrays.toString(transformer.getTimeAxis()));
+        System.out.println(Arrays.toString(transformer.getFrequencyAxis(false)));
         Arrays.stream(dfts).forEach((value)-> {
             System.out.println("****START****");
-            System.out.println(Arrays.toString(value.getMagnitude(false)));
-            System.out.println(Arrays.toString(value.getFFTFreq(31,false)));
-            System.out.println(Arrays.toString(value.getMagnitude(false)));
+            System.out.println("MAG : "+value.getMagnitude(false).length);
+            System.out.println("FFTFreq 31 : "+value.getFFTFreq(31,false).length);
+            System.out.println("FFTFreq 102 : "+value.getFFTFreq(102,false).length);
+            System.out.println("Complex : "+value.getComplex(false).length);
+            System.out.println("****END****");
+            System.out.println("****START****");
+            System.out.println("MAG : "+Arrays.toString(value.getMagnitude(false)));
+            System.out.println("FFTFreq 31 : "+Arrays.toString(value.getFFTFreq(31,false)));
+            System.out.println("FFTFreq 102 : "+Arrays.toString(value.getFFTFreq(102,false)));
+            System.out.println("Complex : "+Arrays.toString(value.getComplex(false)));
             System.out.println("****END****");
         });
         return transformer.getFrequencyAxis(false);

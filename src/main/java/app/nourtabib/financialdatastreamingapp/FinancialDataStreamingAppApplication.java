@@ -51,8 +51,8 @@ public class FinancialDataStreamingAppApplication {
 			Transformers transformers = new Transformers();
 			Instant now = Instant.ofEpochSecond(0);
 //			System.out.println(now.atZone(ZoneId.of("UTC")).getDayOfMonth());
-			List<AccountActivityAggregate> initialList = new ArrayList<>(5);
-			List<Integer> sortedList = new ArrayList<>(24);
+			List<AccountActivityAggregate> initialList = new ArrayList<>(30);
+			List<Integer> sortedList = new ArrayList<>(30);
 			for (int i = 0; i < 30; i++) {
 				sortedList.add(0);
 			}
@@ -73,12 +73,12 @@ public class FinancialDataStreamingAppApplication {
 //			for(int c : sortedList){
 //				System.out.println(c);
 //			}
-			double[] a = transformers.extractTotalsFromWindowActivity.apply(initialList,181,"daily");
+			double[] a = transformers.extractTotalsFromWindowActivity.apply(initialList,30,"daily");
 //			System.out.println(Arrays.toString(a));
-			System.out.println(a.length);
+//			System.out.println(a.length);
 
-//			double [] res =  Transformers.stfTransform.apply(a,30,29);
-			double [] res1 =  Transformers.stfTransform.apply(a,60,59);
+			double [] res =  Transformers.stfTransform.apply(a,30,29);
+//			double [] res1 =  Transformers.stfTransform.apply(a,60,59);
 //			System.out.println(Arrays.toString(res1));
 //			System.out.println(res1.length);
 //			SpringApplication.run(FinancialDataStreamingAppApplication.class, args);
