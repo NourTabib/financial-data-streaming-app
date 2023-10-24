@@ -1,6 +1,7 @@
 package app.nourtabib.financialdatastreamingapp.streams.utils;
 
 import app.nourtabib.financialdatastreamingapp.avros.AccountActivityAggregate;
+import app.nourtabib.financialdatastreamingapp.avros.ShortTimeFourierResult;
 import com.github.psambit9791.jdsp.transform.ShortTimeFourier;
 import com.github.psambit9791.jdsp.transform._Fourier;
 
@@ -8,6 +9,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class Transformers {
     public Transformers() {
@@ -19,7 +22,7 @@ public class Transformers {
     }
     @FunctionalInterface
     public interface StfTransformer {
-        public double[] apply(double[] signals,int windowSize,int overlap);
+        public ShortTimeFourierResult apply(double[] signals,int windowSize,int overlap);
     }
     public static final SignalExtractor<AccountActivityAggregate> extractTotalsFromWindowActivity = (aggregationList, paddedSize, granularity) -> {
         if(aggregationList.size() < 1){
@@ -44,24 +47,31 @@ public class Transformers {
     public static final StfTransformer stfTransform = (signals,windowSize,overlap) -> {
         ShortTimeFourier transformer = new ShortTimeFourier(signals,windowSize,overlap);
         transformer.transform();
-        transformer.getTimeAxis();
         _Fourier[] dfts = transformer.getOutput();
-        System.out.println(Arrays.toString(transformer.getTimeAxis()));
-        System.out.println(Arrays.toString(transformer.getFrequencyAxis(false)));
-        Arrays.stream(dfts).forEach((value)-> {
-            System.out.println("****START****");
-            System.out.println("MAG : "+value.getMagnitude(false).length);
-            System.out.println("FFTFreq 31 : "+value.getFFTFreq(31,false).length);
-            System.out.println("FFTFreq 102 : "+value.getFFTFreq(102,false).length);
-            System.out.println("Complex : "+value.getComplex(false).length);
-            System.out.println("****END****");
-            System.out.println("****START****");
-            System.out.println("MAG : "+Arrays.toString(value.getMagnitude(false)));
-            System.out.println("FFTFreq 31 : "+Arrays.toString(value.getFFTFreq(31,false)));
-            System.out.println("FFTFreq 102 : "+Arrays.toString(value.getFFTFreq(102,false)));
-            System.out.println("Complex : "+Arrays.toString(value.getComplex(false)));
-            System.out.println("****END****");
+        ShortTimeFourierResult result = new ShortTimeFourierResult();
+
+        // Setting the Time Axis
+        result.setTimeAxis(
+                Arrays.stream(transformer.getTimeAxis())
+                        .boxed()
+                        .collect(Collectors.toList())
+        );
+        // Setting The Frequency Axis
+        result.setFrequencyAxis(
+                Arrays.stream(transformer.getFrequencyAxis(false))
+                        .boxed()
+                        .collect(Collectors.toList())
+        );
+        // Iterating Over the Fourier Transformation Output
+        Arrays.stream(dfts).forEach(value -> {
+            result.getOutputFFTFreqs().add(
+                    Arrays.stream(value.getFFTFreq(4,false)).boxed().collect(Collectors.toList())
+            );
+            result.getOutputMagnitudes().add(
+                    Arrays.stream(value.getMagnitude(false)).boxed().collect(Collectors.toList())
+            );
         });
-        return transformer.getFrequencyAxis(false);
+        return result;
     };
 }
+

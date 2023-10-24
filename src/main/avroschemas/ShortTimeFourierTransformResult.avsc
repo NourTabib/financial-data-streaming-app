@@ -1,0 +1,41 @@
+{
+  "namespace": "app.nourtabib.financialdatastreamingapp.avros",
+  "name": "ShortTimeFourierResult",
+  "type": "record",
+  "fields": [
+    {
+      "name" : "timeAxis",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name" : "frequencyAxis",
+      "type": {
+        "type": "array",
+        "items": "double"
+      }
+    },
+    {
+      "name" : "outputFFTFreqs",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": "double"
+        }
+      }
+    },
+    {
+      "name" : "outputMagnitudes",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": "double"
+        }
+      }
+    }
+  ]
+}
