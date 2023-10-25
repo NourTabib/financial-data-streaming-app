@@ -52,10 +52,7 @@ public class AccountActivityAggregatesEnricherStream {
 
         accountIncomeActivityOneMonthDailyAggregStreams
                 .mapValues((key,value) -> Transformers.extractTotalsFromWindowActivity.apply(value,30,"daily"))
-                .mapValues((key,value) -> Transformers.stfTransform.apply(value,30,29))
-                .groupByKey()
-                .windowedBy(oneMonthWindow.advanceBy(oneDay))
+                .mapValues((key,value) -> Transformers.stfTransform.apply(value,30,29));
 
-        ;
     }
 }
